@@ -1,0 +1,484 @@
+                      --------------------------------------------------
+                                                                  aFiler
+                      --------------------------------------------------
+                      An Android .apk file manager for Windows and Linux
+                            (and possibly other platforms in the future)
+                                                              by Therion
+                                                         (Bo Krogsgaard)
+                                                     Kilometer Stone 100
+                                                Codename "Jason's Chain"
+                      --------------------------------------------------
+                                     Concept, Design, Framework, Modules
+                                          and the whole fucking she-bang
+                                                   Copyright © 2012-2013
+                                                   Nocturnal Productions
+                                                     All rights reserved
+                                                      ----- except -----
+                                       aapt.exe Copyright © Google, Inc.
+                                                      Apache 2.0 license
+                                         unzip.exe Copyright © Info-ZIP.
+                                                             BSD license
+                                                          and sqlite.dll
+                                                          Public domain.
+                      --------------------------------------------------
+
+
+                                 README
+
+
+This archive contains the latest version of aFiler, a tool to help you
+manage .apk files for the Android platform.
+
+If you're in a hurry, skip to "Quick Start" below, otherwise, read on.
+
+                      --------------------------------------------------
+                                                              Disclaimer
+                      --------------------------------------------------
+
+We at Nocturnal Productions take NO responsibility for the outcome of
+using this program, whatever they might be, and can NOT be held
+responsible for any damages, financially or otherwise, that anybody
+might experience from using aFiler (this program). We will warn you,
+that during the creation of aFiler, some problems and accidental
+deletion of files have occurred, and although we cannot find any errors
+left, there might be some left (there always are, aren't there? :) ..
+
+Having said that, WE DISALLOW YOU TO USE THIS PROGRAM if You cannot
+abide to the above disclaimer, whatever Your reasons may be. This
+program is, although copyrighted by Nocturnal Productions, FREE 
+SOFTWARE, and when You pay nothing, expect nothing!
+
+                      --------------------------------------------------
+                                                                   Intro
+                      --------------------------------------------------
+
+If you have ever goofed around with emulators, you probably came across
+clrMame at one point. Wonderful tool that makes sure you only have one
+copy of a given piece of software, and given one or more data files, it
+can pretty much keep track of whatever you want.
+
+However, noone could ever be arsed to write such a data file for Android
+software. It is not exactly rocket science, but a little more complex
+than you think.
+
+Which is where aFiler comes in.
+
+aFiler is two components. A command line utility that will make sure to
+kill any duplicate files you might come across, and a graphical user
+interface to help you sideload your file library onto your Android
+device.
+
+                      --------------------------------------------------
+                                                            Requirements
+                      --------------------------------------------------
+
+For aFiler.exe:
+
+- A computer capable of running Windows XP or newer.
+- One or more Android .apk files.
+
+Note, you do not need to install any IME's or Asian language packs in
+order to get full Unicode support under Windows XP anymore, that issue
+was fixed in version 0.60.
+
+                      --------------------------------------------------
+                                                Quick start - aFiler.exe
+                      --------------------------------------------------
+
+For the impatient, here's a really quick way of getting aFiler up and
+running.
+
+aFiler.exe I YES
+aFiler.exe F "a (p) v [c]"
+mkdir E:\Android
+aFiler.exe R E:\Android
+mkdir E:\Android\Obb
+aFiler.exe S E:\Android\Obb
+
+Optional:
+
+aFiler.exe O fak-
+aFiler.exe O tra+
+
+Step by step:
+
+- Initialise database
+- Set rename filemask
+- Make directory for repository
+- Tell aFiler to use that directory
+- Make directory for SDCARD data
+- Tell aFiler to use that directory
+
+Optional:
+
+- Disable fakewrites
+- Enable transactions
+
+                      --------------------------------------------------
+                                                      Usage - aFiler.exe
+                      --------------------------------------------------
+
+If you want to use the command line utility by itself, here goes:
+
+aFiler.exe <option> <parameter>
+
+aFiler *always* takes *exactly* one option and one parameter. Options
+are case sensitive, remember that unless you really want to mess up your
+database. All configuration options are upper case, and all command
+options are lower case.
+
+Configuration options:
+
+I - Initialize database.
+
+    This is the first thing you want to do. It will create a new 
+    database for you, or delete an existing one and start all over.
+    
+    Parameter must be the word YES in upper case to confirm that you
+    might be about to destroy your existing database.
+
+    Example: aFiler.exe I YES
+
+R - Set repository path.
+
+    You always want to do this after using command I. This sets the 
+    folder that aFiler considers the "repository" or "master storage",
+    i.e. the folder it will output validated, indexed and renamed files
+    to. If you ever delete files by hand from the repository, you will
+    have to run options I, R and s after eachother in order to have a
+    database that reflects your repository 100 percent accurately.
+    
+    Parameter is an existing and writable folder name.
+    
+    Example: aFiler.exe R E:\Android
+
+S - Set OBB storage path.
+
+    This sets the folder that aFiler uses for storing SDCARD data in the
+    .obb format. If you ever delete files by hand from the repository,
+    you will have to run option l in order to have a database that 
+    reflects your OBB storage 100 percent accurately.
+    
+    Parameter is an existing and writable folder name.
+    
+    Example: aFiler.exe S E:\Android\Obb
+
+F - Set filename pattern
+
+    The rename function makes use of this pattern to give you more
+    flexibility when renaming files. Different people have different
+    preferences in filenames, so this was added to make people happy
+    (and also to avoid the rare duplicate filename).
+    
+    The available characters are:
+    
+    a - Application name (i.e. Angry Birds)
+    p - Package name (i.e. com.rovio.angrybirds)
+    v - Package version (i.e. 2.5.0)
+    c - Four hexadecimal character unique identifier
+    
+    Also, spaces, brackets () and angle brackets [] are allowed.
+    
+    Example: aFiler.exe F "a (p) v [c]"
+    
+    will yield "Angry Birds (com.rovio.angrybirds) v2.5.0 [23BC].apk".
+    
+    Note that you must ALWAYS quote the filename pattern in order for
+    your command line interpreter to parse the spaces as part of the
+    pattern.
+
+C - Show configuration.
+
+    The configuration of aFiler is stored in its database, which will
+    always be in the same directory as itself.
+
+    Parameter can be anything.
+    
+    Example: aFiler.exe C -
+
+O - Set option
+
+    Setting an option works like this: Know the name of it, add a + or -
+    at the end, and you toggle it. They must all be in lower case, and
+    only the first three characters have to be unique, so in fact,
+    tra+, transaction+ and transvestite+ will all turn on transactions.
+    
+    Here they are:
+    
+    debuginfo - Stuff i would like to know if you need to file a bug
+                report, basically a call trace which you should cut and
+                paste into an email for me.
+
+    fakedelete - Well, it WILL write files as requested, but not delete
+                 source files.
+
+    iconsupport - Soon!
+
+    jolietcompliance - Makes sure all filenames are a maximum of 63
+                       characters long. Not implemented yet.
+
+    recursion - This will enable directory recursion. When enabled it
+                affects all apk related command options, but not they
+                obb related ones (yet).
+
+    setpriority - Sets the aFiler and child process priority to "above
+                  normal", which really only helps if you have a really
+                  fast hard drive and a really slow computer.
+                  
+    transactions - Speeds up aFiler by about 800 percent, but if you
+                   suffer a power loss, you have to start all over. Also
+                   an experimental feature, but pretty stable.
+                   
+    vacuum - Vacuum (optimise) the database after running command 
+             option k. Compare this to running defrag.
+                   
+    Example: aFiler.exe O tra+
+    Example: aFiler.exe O fak-
+
+Command options:
+
+All command options take a filemask as parameter. Command s will always
+use the repository directory, all others will always use the current
+directory. You can NOT specify another source directory.
+
+a - Add files
+
+    Takes the files in the current directory matching the filemask
+    passed as parameter, adds them to the database if not known already,
+    renames them according to the information found in the internal
+    AndroidManifest.xml files, and moves them to the repository.
+    
+    Example: aFiler a *.apk
+
+d - Delete files
+
+    Scans every file in the current directory matching the filemask
+    passed as parameter, and if they already exist in the database,
+    deletes them. This is why it is so important to keep the database in
+    sync with the repository, otherwise you might lose files.
+    
+    Example: aFiler d *.apk
+
+k - Keep only latest
+
+    Scans every file in the current directory matching the filemask
+    passed as parameter, and if a newer version exists in the database,
+    deletes them.
+    
+l - Scan OBB repository
+
+    Like command option s, but for handling OBB files instead.
+    
+    Note that the recursion option has no effect on this.
+
+    Example: aFiler l *.obb
+
+o - Add OBB files
+
+    Takes the files in the current directory matching the filemask
+    passed as parameter, adds them to the database if not known already,
+    and moves them to the OBB storage.
+    
+    Note that the recursion option has no effect on this.
+
+    Example: aFiler o *.obb
+
+r - Rename files
+
+    Renames the files in the current directory matching the filemask
+    passed as parameter, according to the information found in the
+    internal AndroidManifest.xml files, but does not add them to the
+    database and does not move them to the repository.
+    
+    Files will be renamed after the pattern set with configuration
+    option F.
+
+    Example: aFiler r *.apk
+
+s - Scan repository
+
+    Scans the repository for files matching the filemask passed as
+    parameter, and adds them to the database. This is very handy if you
+    at one point lose integrity between the database and the repository,
+    since the sequence of the I, R and s options will guarantee you that
+    everything is in sync, for instance if you deleted files from your
+    repository by hand.
+    
+    On the other hand, if you added files to your repository by hand,
+    you can run this option without options I and R first, since it will
+    happily add files it doesn't know already. However, it's for the
+    best of everyone involved that you always use option a to add files
+    to your repository.
+    
+    Example: aFiler s *.apk
+
+t - Set timestamp on files
+
+    Reads the timestamp of the internal AndroidManifest.xml files for
+    every file matching the filemask passed as parameter, and sets this
+    timestamp as last modification date and time on the apk file itself.
+    Makes it easier to find old and new files in file managers.
+
+    Example: aFiler t *.apk
+    
+v - Validate files
+
+    Performs a three point integrity check on every apk file matching
+    the filemask passed as parameter. 1) The archive integrity is 
+    checked, 2) The presence of AndroidManifest.xml is checked, and 3)
+    the integrity of AndroidManifest.xml is checked.
+    
+    If either of these checks fail, the apk file will be deleted, so use
+    with caution. Especially, DO NOT run this command on .obb files, as
+    they do NOT have the same structure as .apk files. You WILL lose
+    data if you try.
+
+    Example: aFiler v *.apk
+
+                      --------------------------------------------------
+                                                              Tech Notes
+                      --------------------------------------------------
+
+aFiler depends on key constraints of the SQLite library. While it is
+extremely stable, nothing is perfect, so if you end up losing files,
+well, your loss.
+
+Also, quite a few programmers have no clue how to write a proper
+Manifest file. Missing application title here, missing icon there, it
+all sums up to what i refer to as a "dirty database". This is where
+aFiler does a LOT of error checking, but it cannot make up for missing
+metadata. Instead of starting all over, though, you can grab the
+magnificent application SQLite Expert, delete the offending row(s) and
+rescan the faulty files (or delete them; chances are they might not work
+or even show up on your device). I cannot stress how much you will need
+this application, because something is bound to go wrong, and you
+seriously don't want to start again from scratch if something goes
+wrong.
+
+                      --------------------------------------------------
+                                                         Troubleshooting
+                      --------------------------------------------------
+
+If something breaks, switch debug info on and send me the log.
+
+aFiler.exe O deb+
+
+                      --------------------------------------------------
+                                                             Limitations
+                      --------------------------------------------------
+
+- Nothing in particular anymore. There is of course a to-do list, but do
+  keep in mind that aFiler is work in progress, so unless something
+  really strange comes up, i won't specify it here.
+
+                      --------------------------------------------------
+                                                              Known Bugs
+                      --------------------------------------------------
+
+- If a file begins with a hyphen (-), aFiler is prone to bum out, and in
+  the case of option v, accidentally delete the file. This is due to a
+  limitation in the unzip.exe that ships with aFiler (which is the
+  latest made by Info-ZIP).
+  
+  I am working on finding a workaround or a replacement unzip. For now,
+  there is nothing i can do, sorry.
+
+                      --------------------------------------------------
+                                                           What was used
+                      --------------------------------------------------
+
+aFiler is the product of raw amounts of alcohol and raw amounts of apk
+hunting on a few torrent sites. While i do not condone software piracy,
+i had to resort to it, for the simple purpose of having enough material
+to test with. The single non-free file i have left after said testing is
+a copy of Neuroshima Hex, which i have now paid for, awesome game.
+
+Apart from that:
+
+- FreePascal for compiling, with the UTF-8 functions taken from Lazarus.
+- UEStudio for text editing.
+- unzip.exe from Info-ZIP and aapt.exe from the Android platform tools.
+- SQLite3.dll by Dwayne Richard Hipp and SQLite Expert by Bogdan Ureche.
+
+Also:
+
+- Raw amounts of alcohol, supplied by the local supermarkets.
+- Raw amounts of tobacco, likewise.
+- Raw amounts of fucking loud music, supplied by a plethora (love that
+  word) of bands around the globe.
+- A fuckton of cup noodles. Don't ask. I could make several jokes about
+  "one handed typing" here, but let's skip those.
+
+                      --------------------------------------------------
+                                                                  Thanks
+                      --------------------------------------------------
+
+This is easy.
+
+First, to the fantastic four, the guys who joined Nocturnal Productions
+to help me test this. It's been a slow and painful process holding out
+on you guys, but i hope we got to the goal.
+
+Second, to the two who pissed me off enough to start coding again.
+
+And last, but not least, a handful of really helpful friendly people on
+freenode #fpc for helping me out when i stared myself blind on what i
+was typing.
+
+                      --------------------------------------------------
+                             Payment, donations, and all the other yadda
+                      --------------------------------------------------
+
+aFiler is NOT Public Domain. It is the copyrighted work of Nocturnal
+Productions, but i grant everybody in the world exclusive rights to use
+aFiler without paying a single dime, penny, pfennig or whatever Your
+local currency is.
+
+If you want to pay for using aFiler, send a donation to cancer research,
+or buy me a beer if you ever meet me.
+
+Was free, is free, always free .. (quote from Mark Cox).
+
+                      --------------------------------------------------
+                                                            Open Source?
+                      --------------------------------------------------
+
+Short answer: Not yet.
+
+Long answer: Eventually. I am primarily writing aFiler for myself, and
+until i get it working exactly how i want it to, i don't want anybody
+else to tinker with my code. When i get the Win32 version working one
+hundred percent as i want it to, i will try to port it to OS/X and
+Linux, and when those work, i will open source it, because that is when
+i feel the project is completed.
+
+But all you dumb shits who go boohoohoo'ing over everything should be
+open source can go suck a fat one. My code, my product, my decision.
+
+Capice?
+
+                      --------------------------------------------------
+                                                                   Outro
+                      --------------------------------------------------
+
+My dear friend Simon has always made fun of me, in the way of "do you
+think you can manage to write TWO useful programs in your lifetime?".
+
+This is funny and sad at the same time. When i started coding more than
+20 years ago, the motivation was shutting up a smartass, and a bad
+breakup kept the anger floating. But from sometimes in 1995 until
+present day (with the exception of DisGust in 2006), i have had
+absolutely no motivation or ideas that would lead me to sit down and
+dust off a compiler.
+
+That is why i thank the people who pissed me off so much that i regained
+my motivation. Maybe it doesn't make sense to you, but it sure does to
+me.
+
+                      --------------------------------------------------
+                                                                  aFiler
+                      --------------------------------------------------
+                                                   Copyright © 2012-2013
+                                                   Nocturnal Productions
+                                                     All rights reserved
+                      --------------------------------------------------
