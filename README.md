@@ -1,6 +1,6 @@
 # aFiler
 Offline Google Play .apk manager
 
-Please read the [aFiler.txt] (aFiler.txt) enclosed.
+Please read the [aFiler.txt] enclosed.
 
 The license has changed. Do with it what you want, it is Public Domain. Wanna keep my name on it? Thank you. Not? Fine with me.
